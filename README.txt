@@ -22,7 +22,7 @@ can load it.
 Configuring
 ===========
 
-Load the shares library from magnus.conf (substitute $SOPATH below to
+Load the shared library from magnus.conf (substitute $SOPATH below to
 the directory where you installed client_info.so):
 
 Init fn=load-modules shlib=$SOPATH/client_info.so funcs=print_client_info

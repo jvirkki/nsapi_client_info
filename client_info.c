@@ -41,12 +41,25 @@
  */
 NSAPI_PUBLIC int print_client_info(pblock * pb, Session * sn, Request * rq)
 {
+  int rv;
+  char * ip = pblock_findval("ip", sn->client);
+
+  protocol_status(sn, rq, PROTOCOL_OK, NULL);
+
   param_free(pblock_remove("content-type", rq->srvhdrs));
   pblock_nvinsert("content-type", "text/plain", rq->srvhdrs); 
 
-  char * ip = pblock_findval("ip", sn->client);
+  rv = protocol_start_response(sn, rq);
+  if (rv == REQ_NOACTION) { /* HTTP HEAD instead of GET */
+    return REQ_PROCEED;
+  }
 
-  int rv = net_write(sn->csd, ip, strlen(ip));
+  if (rv == REQ_ABORTED) {
+    protocol_status(sn, rq, PROTOCOL_SERVER_ERROR, NULL);
+    return rv;
+  }
+
+  rv = net_write(sn->csd, ip, strlen(ip));
   if (rv == IO_ERROR) {
     return REQ_EXIT;
   }
