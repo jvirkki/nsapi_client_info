@@ -35,7 +35,7 @@
 INC=-I $(NSAPI_INCLUDE_DIR)
 
 client_info.so: client_info.c
-	$(CC) $(INC) -shared client_info.c -o client_info.so
+	$(CC) $(INC) -fPIC -shared client_info.c -o client_info.so
 
 clean:
 	rm -f client_info.so
